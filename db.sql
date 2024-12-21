@@ -1,19 +1,23 @@
 -- Create Advertisers Table
 CREATE TABLE ADVERTISERS (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    contact_info TEXT,
-    industry VARCHAR(255),
+    name VARCHAR(255) NOT NULL, 
+    industry_id INTEGER REFERENCES industry,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    updated_at TIMESTAMP ,
 
+);
+CREATE TABLE industry (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP ,
+)
 -- Create TV Table
 CREATE TABLE TV (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     channel_name VARCHAR(255) NOT NULL,
     channel_description TEXT,
-    broadcast_region VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -46,38 +50,47 @@ CREATE TABLE AD_CONTRACTS (
     start_date DATE,
     end_date DATE,
     total_ad_duration INT,
-    ad_type VARCHAR(255),
-    frequency INT,
-    tv_id INT REFERENCES TV(id),
-    radio_id INT REFERENCES RADIO(id),
-    panel_id INT REFERENCES PANEL(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE AD_CONTRACT_TV (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ad_contract_id INT REFERENCES AD_CONTRACTS(id) ON DELETE CASCADE,
+    tv_id INT REFERENCES TV(id),
+    duration INT, -- e.g., in seconds
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ CREATE TABLE AD_CONTRACT_PANEL (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ad_contract_id INT REFERENCES AD_CONTRACTS(id) ON DELETE CASCADE,
+    panel_id INT REFERENCES PANEL(id),
+    image_url TEXT, -- Optional image link for the ad
+  
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create Ad Data Entries Table
 CREATE TABLE AD_DATA_ENTRIES (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     ad_contract_id INT REFERENCES AD_CONTRACTS(id),
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
-    ad_duration INT,
-    channel VARCHAR(255),
-    operator_notes TEXT,
+    name TEXT,
+    description TEXT,
+    medium_type VARCHAR(50), -- 'TV', 'RADIO', or 'PANEL'
+    medium_id INT, -- Dynamic reference to TV(id), RADIO(id), or PANEL(id)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create Ad Tracking Table
-CREATE TABLE AD_TRACKING (
+CCREATE TABLE AD_CONTRACT_TRACKING (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    ad_data_entry_id INT REFERENCES AD_DATA_ENTRIES(id),
+    ad_contract_id INT REFERENCES AD_CONTRACTS(id) ON DELETE CASCADE,
+    medium_type VARCHAR(50), -- 'TV', 'RADIO', or 'PANEL'
+    medium_id INT, -- Dynamic reference to TV(id), RADIO(id), or PANEL(id)
     ad_start_time TIMESTAMP,
     ad_end_time TIMESTAMP,
-    ad_duration INT,
-    frequency INT,
-    channel VARCHAR(255),
-    region VARCHAR(255),
+    actual_duration INT, -- The duration actually recorded
+    frequency INT, -- Number of times the ad was aired/displayed
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
