@@ -85,12 +85,12 @@ CREATE TABLE AD_DATA_ENTRIES (
 CCREATE TABLE AD_CONTRACT_TRACKING (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     ad_contract_id INT REFERENCES AD_CONTRACTS(id) ON DELETE CASCADE,
-    medium_type VARCHAR(50), -- 'TV', 'RADIO', or 'PANEL'
-    medium_id INT, -- Dynamic reference to TV(id), RADIO(id), or PANEL(id)
+    medium_type VARCHAR(50),
+    medium_id INT,
     ad_start_time TIMESTAMP,
     ad_end_time TIMESTAMP,
-    actual_duration INT, -- The duration actually recorded
-    frequency INT, -- Number of times the ad was aired/displayed
+    actual_duration INT,
+    frequency INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
