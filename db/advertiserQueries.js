@@ -16,11 +16,16 @@ const createAdvertiser = async (name, industryId) => {
   }
 };
 const getAdvertiserById = async(id)=>{
-  const query = `
-select advertisers.name,industry.name from advertisers
-left join industry 
-on advertisers.industry_id=industry.id
-where advertisers.id = $1
+const query = `
+SELECT 
+    advertisers.name AS advertiser_name, 
+    advertisers.id AS advertiser_id, 
+    industry.id AS industry_id, 
+    industry.name AS industry_name
+FROM advertisers
+LEFT JOIN industry 
+ON advertisers.industry_id = industry.id
+WHERE advertisers.id = $1;
 `
   try {
     const row = await pool.query(query,[id]) 
@@ -31,24 +36,44 @@ where advertisers.id = $1
 }
 const getAllAdvertisers = async ()=>{
   const query = `
-select advertisers.name,industry.name from advertisers
+select
+ advertisers.name AS advertiser_name, 
+    advertisers.id AS advertiser_id, 
+    industry.id AS industry_id, 
+    industry.name AS industry_name
+FROM advertisers
 left join industry 
-on advertisers.industry_id=industry.id
+on advertisers.industry_id=industry.id;
 `
   try {
     const results = await pool.query(query) 
     return results.rows
   } catch (error) {
-    console.log("couldnt fetch advertisers"+error) 
+    console.error("couldnt fetch advertisers"+error) 
   }
 }
-(async () => {
-  const advertiser = await getAllAdvertisers();
-  console.dir(advertiser);
-})();
+
+const updateAdvertiser = async (name, industryId, id) => {
+  const query = `
+    UPDATE advertisers 
+    SET name = $1, industry_id = $2, updated_at = NOW()
+    WHERE id = $3
+    RETURNING *;
+  `;
+
+  try {
+    const result = await pool.query(query, [name, industryId, id]); 
+    return result.rows[0]; // Return the updated advertiser
+  } catch (e) {
+    console.error("Cannot update advertiser:", e.message);
+    throw e; 
+  }
+};
+
 module.exports = {
   createAdvertiser,
   getAdvertiserById,
   getAllAdvertisers,
-  getAdvertiserById
+  getAdvertiserById,
+  updateAdvertiser
 }
