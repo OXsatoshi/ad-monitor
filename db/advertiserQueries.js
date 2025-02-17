@@ -69,11 +69,24 @@ const updateAdvertiser = async (name, industryId, id) => {
     throw e; 
   }
 };
+const deleteAdvertiserById = async (id)=>{
+ const query = `DELETE FROM advertisers WHERE id = $1`;
+  try{
+    const result = pool.query(query,id);
+    return result.rows[0];
+    }catch(e){
+    console.error("Couldnt delet advertisr",e.message)
+    throw e;
+  }
+}    
+
+
 
 module.exports = {
   createAdvertiser,
   getAdvertiserById,
   getAllAdvertisers,
   getAdvertiserById,
-  updateAdvertiser
+  updateAdvertiser,
+  deleteAdvertiserById
 }

@@ -100,23 +100,23 @@ exports.createAdvertiser = async (req,res)=>{
       })
     }
     else
-      res.status(500).json({
-        success:false,
-        error:"Cannot create advertiser"
-      }) 
-    }   
-catch(e) {
     res.status(500).json({
       success:false,
       error:"Cannot create advertiser"
     }) 
-  
+  }   
+  catch(e) {
+    res.status(500).json({
+      success:false,
+      error:"Cannot create advertiser"
+    }) 
+
   }
 }
 
 exports.updateAdvertiser = async (req,res)=>{
   const {advertiser_id ,name,industry_id}= req.body.id;
-console.log("from update")
+  console.log("from update")
   const advertiser = await advertiserQueries.getAdvertiserById(advertiser_id);
   const Correspondedindustry = await industryQueries.getIndustryById(industry_id);
   if(!advertiser || !Correspondedindustry){
@@ -145,8 +145,8 @@ console.log("from update")
           }
         }
       })
-      }
-    
+    }
+
   } 
 
 }
@@ -213,3 +213,13 @@ exports.updateAdvertiser = async (req, res) => {
     });
   }
 };
+const deleteAdvertise=async (req,res)=>{
+  const  advertiserId = req.params.id;
+  try{
+    const deletedAdvertiser =     advertisersQueries.deleteAdvertiserById(advertisrId);
+  } 
+  catch(e){
+    console.error(e);
+    
+  }
+}
