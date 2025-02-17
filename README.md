@@ -57,6 +57,25 @@ This SaaS application is designed to solve two critical problems for advertisers
 
 ## Flowchart
 
+# **GET /ad-contracts/details**: Retrieve Ad Contract Details with Additional Context
+
+## **Purpose:**
+This endpoint retrieves ad contract details along with enriched data. In addition to the basic contract information, it includes details about the advertiser, the mediums used (TV, Radio, Panel), and other relevant metadata.
+
+## **Request Format:**
+
+**Method:** `GET`  
+**URL:** `/ad-contracts/details`  
+**Content-Type:** `application/json`
+
+### **Query Parameters:**
+- **advertiser_id** (optional): Filter contracts by the advertiser ID.
+- **start_date** (optional): Filter contracts that start after this date (in `YYYY-MM-DD` format).
+- **end_date** (optional): Filter contracts that end before this date (in `YYYY-MM-DD` format).
+
+#### Example Request 1: Filter by Advertiser
+```http
+GET /ad-contracts/details?advertiser_id=123
 ```mermaid
 flowchart TD
     classDef process fill:#f9f,stroke:#333,stroke-width:2px;
